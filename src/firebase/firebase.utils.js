@@ -16,25 +16,25 @@ const config = {
 firebase.initializeApp(config);
 
 // 7.12 Storing User Data in Firebase
-export const createUserProfileDocument = async(userAuth, additionalData) => {
+export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
-  
+
   const userRef = firestore.doc(`users/${userAuth.uid}`);
+
   const snapShot = await userRef.get();
-  
+
   if (!snapShot.exists) {
     const { displayName, email } = userAuth;
-    const createAt = new Date();
-
+    const createdAt = new Date();
     try {
       await userRef.set({
         displayName,
         email,
-        createAt,
+        createdAt,
         ...additionalData
-      })
+      });
     } catch (error) {
-      console.log('error creating user', error.message);
+      console.log('Error creating user', error.message);
     }
   }
 

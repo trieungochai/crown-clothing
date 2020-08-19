@@ -8,7 +8,7 @@ import CustomButton from '../custom-button/custom-button.component';
 class SignUp extends React.Component {
   constructor() {
     super();
-    this.setState = {
+    this.state = {
       displayName: '',
       email: '',
       password: '',
@@ -52,15 +52,15 @@ class SignUp extends React.Component {
 
     return (
       <div className="sign-up">
-        <h2 className="title">I do not have an account.</h2>
-        <span>Sign up with your email and password.</span>
+        <h2 className="title">Don't have an account?</h2>
+        <span>Create your Crown-Clothing Account.</span>
         <form className="sign-up-form" onSubmit={this.handleSubmit}>
           <FormInput
             type='displayName'
             name='displayName'
             value={ displayName }
             onChange={this.handleChange}
-            label='Display Name'
+            label='Username'
             required
           />
 
@@ -78,7 +78,7 @@ class SignUp extends React.Component {
             name='password'
             value={ password }
             onChange={this.handleChange}
-            label='Create a password'
+            label='Type a password'
             required
           />
 
@@ -87,9 +87,10 @@ class SignUp extends React.Component {
             name='confirmPassword'
             value={ confirmPassword }
             onChange={this.handleChange}
-            label='Confirm your password'
+            label='Retype your password'
             required
           />
+
           <div className="button">
             <CustomButton type='submit'>SIGN UP</CustomButton>
           </div>
