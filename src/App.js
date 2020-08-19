@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { auth } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 import './App.css';
 import HomePage from './pages/homepage/homepage.component';
@@ -26,9 +26,23 @@ class App extends React.Component {
   // But we don't want to remount our app, we just want to always know when firebase has realized that the authentication has changed.
   // (whenever user signs in/signs out, we want to be aware of that change without having to manually fetch)
   componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
-      this.setState({ currentUser: user });
-      console.log(user);
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if (userAuth) {
+        // to check if our DB has updated
+        const userRef = await createUserProfileDocument(userAuth);
+
+        // the snapShot obj - where we're going to get the data related to this user that we possibly stored.
+        // if it was a new authentication or the data related to the user that is already stored in our DB.
+        userRef.onSnapshot(snapShot => {
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data()
+            }
+          })
+        });
+      }
+      this.setState({currentUser: userAuth});
     });
   };
 
