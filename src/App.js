@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom'; // Redirect - don't want to still access the sign-in page if already signed in
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 import './App.css';
@@ -58,18 +58,31 @@ class App extends React.Component {
         <Switch> 
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
-          <Route path='/signin' component={SignInAndSignUpPage} />
+          <Route
+            exact
+            path='/signin'
+            // "render" is a JS in location that determines what component to return
+            render={() =>
+              this.props.currentUser
+              ? <Redirect to='/' />
+              : <SignInAndSignUpPage />
+            }
+          />
         </Switch>
       </div>
     );
   }
 };
 
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser,
+});
+
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user)),
 });
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 // component - the component we want to render
 // path - will be a string that's equal to the path itself from the current place
