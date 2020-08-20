@@ -1,4 +1,6 @@
 import React from 'react';
+// connect is a higher order component that lets us modify our component to have access to things related to redux
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { auth } from '../../firebase/firebase.utils';
 
@@ -24,4 +26,13 @@ const Header = ({ currentUser }) => {
   )
 }
 
-export default Header;
+// this state obj is the root reducer
+const mapStateToProps = state => ({
+  currentUser: state.user.currentUser,
+});
+
+// higher components are functions that take components as arguments and then return a new souped-up component
+// what we'll do with connect() is going to pass it 2 functions
+// the 1st - going to be the func that allows us to access the states (with the state being are root reducer to be specific)
+// the 2nd - optional (dispatch)
+export default connect(mapStateToProps)(Header);

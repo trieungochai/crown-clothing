@@ -22,7 +22,7 @@ const MenuItem = ({ title, imageUrl, size, history, linkUrl, match }) => {
       />
       <div className='content'>
         <h1 className='title'>{ title }</h1>
-        <span className='subtitle'>SHOW NOW</span>
+        <span className='subtitle'>BUY NOW</span>
       </div>
     </div>
   )

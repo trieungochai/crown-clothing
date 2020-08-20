@@ -8,14 +8,11 @@ import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-n-sign-up/sign-in-n-sign-up.component';
 import Header from './components/header/header.component';
 
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      currentUser: null,
-    };
-  }
+// receiving the currentUser value from our reducer
+import { connect } from 'react-redux';
+import { setCurrentUser } from './redux/user/user.actions';
 
+class App extends React.Component {
   // We don't have to manually fetch every time we want to check if that stt changed.
   // this connection is always open as long as our React.Component{} is mounted on our job.
   // Because it's an subscription, we have to close subscriptions when this unmount because we don't want any memory leak in our JS app.
@@ -26,6 +23,8 @@ class App extends React.Component {
   // But we don't want to remount our app, we just want to always know when firebase has realized that the authentication has changed.
   // (whenever user signs in/signs out, we want to be aware of that change without having to manually fetch)
   componentDidMount() {
+    const { setCurrentUser } = this.props;
+
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
         // to check if our DB has updated
@@ -34,15 +33,13 @@ class App extends React.Component {
         // the snapShot obj - where we're going to get the data related to this user that we possibly stored.
         // if it was a new authentication or the data related to the user that is already stored in our DB.
         userRef.onSnapshot(snapShot => {
-          this.setState({
-            currentUser: {
-              id: snapShot.id,
-              ...snapShot.data()
-            }
+          setCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data()
           });
         });
       }
-      this.setState({ currentUser: userAuth });
+      setCurrentUser(userAuth);
     });
   };
 
@@ -53,7 +50,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         {/* 'Switch' does not render anything else but that 'Route'.
             That's useful if we don't want to accidentally render multiple components.
             EX: the '/' has but 'Switch' will match '/' first and then it'll not render anything else later.      
@@ -66,9 +63,13 @@ class App extends React.Component {
       </div>
     );
   }
-}
+};
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user)),
+});
+
+export default connect(null, mapDispatchToProps)(App);
 
 // component - the component we want to render
 // path - will be a string that's equal to the path itself from the current place
