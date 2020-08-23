@@ -7,10 +7,16 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-n-sign-up/sign-in-n-sign-up.component';
 import Header from './components/header/header.component';
+import CheckoutPage from './pages/checkout/checkout.component';
 
 // receiving the currentUser value from our reducer
 import { connect } from 'react-redux';
 import { setCurrentUser } from './redux/user/user.actions';
+
+// even though we only have 1 selected property that we're passing into our mapStateToProps
+// we should still use createStructuredSelector() because in the future we do need to pull in more
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from './redux/user/user.selectors';
 
 class App extends React.Component {
   // We don't have to manually fetch every time we want to check if that stt changed.
@@ -58,6 +64,7 @@ class App extends React.Component {
         <Switch> 
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
+          <Route exact path='/checkout' component={CheckoutPage} />
           <Route
             exact
             path='/signin'
@@ -74,8 +81,8 @@ class App extends React.Component {
   }
 };
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser,
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
 });
 
 const mapDispatchToProps = dispatch => ({

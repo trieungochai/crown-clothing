@@ -9,6 +9,10 @@ import { ReactComponent as Logo} from '../../assets/crown.svg';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 
+import { createStructuredSelector } from 'reselect';
+import { selectCartHidden } from '../../redux/cart/cart.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+
 const Header = ({ currentUser, hidden }) => {
   return (
     <div className='header'>
@@ -28,12 +32,19 @@ const Header = ({ currentUser, hidden }) => {
       {hidden ? null : <CartDropdown/>}
     </div>
   );
-}
+};
 
 // this state obj is the root reducer
-const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
-  currentUser,
-  hidden
+// const mapStateToProps = state => ({
+//   currentUser: selectCurrentUser(state),
+//   hidden: selectCartHidden(state)
+// });
+
+// createStructuredSelector() will automatically pass are top level state
+// that we get as our map states props into each subsequent selector
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  hidden: selectCartHidden
 });
 
 // higher components are functions that take components as arguments and then return a new souped-up component
