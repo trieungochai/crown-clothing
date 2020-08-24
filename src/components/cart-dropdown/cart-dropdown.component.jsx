@@ -9,7 +9,11 @@ import CartItem from '../cart-item/cart-item.component';
 import { createStructuredSelector } from 'reselect';
 import { selectCartItems } from '../../redux/cart/cart.selectors';
 
-const CartDropdown = ({ cartItems }) => {
+import { withRouter } from 'react-router-dom';
+
+import { toggleCartHidden } from '../../redux/cart/cart.actions';
+
+const CartDropdown = ({ cartItems, history, dispatch }) => {
   return(
     <div className="cart-dropdown">
       <div className="card-items">
@@ -19,7 +23,12 @@ const CartDropdown = ({ cartItems }) => {
           : <span className="empty-message">Your cart is empty</span>
         }
       </div>
-      <CustomButton>CHECK OUT NOW!</CustomButton>
+      <CustomButton
+        onClick={() => {
+          history.push('/checkout');
+          dispatch(toggleCartHidden())
+        }}
+      >CHECK OUT NOW!</CustomButton>
     </div>
   );
 };
@@ -30,4 +39,8 @@ const mapStateToProps = createStructuredSelector({
   cartItems: selectCartItems
 });
 
-export default connect(mapStateToProps)(CartDropdown);
+// connect() will pass the dispatch into our components as a props
+// if we don't supply the 2nd arg to connect
+// (if we don't supply maDispatchToProps as the 2nd param)
+// 27. Dispatch Action Shorthand
+export default withRouter(connect(mapStateToProps)(CartDropdown));
