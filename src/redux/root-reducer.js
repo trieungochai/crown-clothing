@@ -8,6 +8,8 @@ import storage from 'redux-persist/lib/storage';
 
 import userReducer from './user/user.reducer';
 import cartReducer from './cart/cart.reducer';
+import directoryReducer from './directory/directory.reducers';
+import shopReducer from './shop/shop.reducer';
 
 // define new persist config
 // JSON obj that represents the possible configurations that we want for redux-persist to use
@@ -22,6 +24,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
+  directory: directoryReducer,
+  shop: shopReducer,
 });
 
 export default persistReducer(persistConfig, rootReducer);
