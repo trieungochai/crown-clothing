@@ -22,7 +22,7 @@ export const selectCollectionForPreview = createSelector(
     : []
 );
 
-export const selectCollectionFetching = createSelector(
+export const selectIsCollectionFetching = createSelector(
   [selectShop],
   shop => shop.isFetching
 );
