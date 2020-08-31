@@ -1,8 +1,6 @@
 import React from 'react';
 // connect is a higher order component that lets us modify our component to have access to things related to redux
 import { connect } from 'react-redux';
-// import { Link } from 'react-router-dom';
-import { auth } from '../../firebase/firebase.utils';
 
 // import './header.styles.scss';
 import { HeaderContainer, LogoContainer, OptionsContainer, OptionLink } from './header.styles';
@@ -10,12 +8,13 @@ import { HeaderContainer, LogoContainer, OptionsContainer, OptionLink } from './
 import { ReactComponent as Logo} from '../../assets/crown.svg';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
+import { signOutStart } from '../../redux/user/user.actions';
 
 import { createStructuredSelector } from 'reselect';
 import { selectCartHidden } from '../../redux/cart/cart.selectors';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 
-const Header = ({ currentUser, hidden }) => {
+const Header = ({ currentUser, hidden, signOutStart }) => {
   return (
     <HeaderContainer>
       <LogoContainer to='/' >
@@ -26,7 +25,7 @@ const Header = ({ currentUser, hidden }) => {
         <OptionLink to ='/shop'>CONTACT</OptionLink>
         {
           currentUser
-            ? (<OptionLink as='div' onClick={() => auth.signOut()}>SIGN OUT</OptionLink>)
+            ? (<OptionLink as='div' onClick={signOutStart}>SIGN OUT</OptionLink>)
             : (<OptionLink to='/signin'>SIGN IN</OptionLink>)
         }
         <CartIcon />
@@ -49,8 +48,12 @@ const mapStateToProps = createStructuredSelector({
   hidden: selectCartHidden
 });
 
+const mapDispatchToProps = dispatch => ({
+  signOutStart: () => dispatch(signOutStart())
+});
+
 // higher components are functions that take components as arguments and then return a new souped-up component
 // what we'll do with connect() is going to pass it 2 functions
 // the 1st - going to be the func that allows us to access the states (with the state being are root reducer to be specific)
 // the 2nd - optional (dispatch)
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

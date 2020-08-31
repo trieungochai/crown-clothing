@@ -1,6 +1,5 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom'; // Redirect - don't want to still access the sign-in page if already signed in
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 import './App.css';
 import HomePage from './pages/homepage/homepage.component';
@@ -11,12 +10,12 @@ import CheckoutPage from './pages/checkout/checkout.component';
 
 // receiving the currentUser value from our reducer
 import { connect } from 'react-redux';
-import { setCurrentUser } from './redux/user/user.actions';
 
 // even though we only have 1 selected property that we're passing into our mapStateToProps
 // we should still use createStructuredSelector() because in the future we do need to pull in more
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from './redux/user/user.selectors';
+import { checkUserSession } from './redux/user/user.actions';
 
 class App extends React.Component {
   // We don't have to manually fetch every time we want to check if that stt changed.
@@ -29,24 +28,24 @@ class App extends React.Component {
   // But we don't want to remount our app, we just want to always know when firebase has realized that the authentication has changed.
   // (whenever user signs in/signs out, we want to be aware of that change without having to manually fetch)
   componentDidMount() {
-    const { setCurrentUser } = this.props;
+    const { checkUserSession } = this.props;
+    checkUserSession();
+    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    //   if (userAuth) {
+    //     // to check if our DB has updated
+    //     const userRef = await createUserProfileDocument(userAuth);
 
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if (userAuth) {
-        // to check if our DB has updated
-        const userRef = await createUserProfileDocument(userAuth);
-
-        // the snapShot obj - where we're going to get the data related to this user that we possibly stored.
-        // if it was a new authentication or the data related to the user that is already stored in our DB.
-        userRef.onSnapshot(snapShot => {
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data()
-          });
-        });
-      }
-      setCurrentUser(userAuth);
-    });
+    //     // the snapShot obj - where we're going to get the data related to this user that we possibly stored.
+    //     // if it was a new authentication or the data related to the user that is already stored in our DB.
+    //     userRef.onSnapshot(snapShot => {
+    //       setCurrentUser({
+    //         id: snapShot.id,
+    //         ...snapShot.data()
+    //       });
+    //     });
+    //   }
+    //   setCurrentUser(userAuth);
+    // });
   };
 
   componentWillUnmount() {
@@ -86,7 +85,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user)),
+  checkUserSession: () => dispatch(checkUserSession())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
