@@ -1,22 +1,36 @@
 import React from 'react';
 
-import './collection.styles.scss';
+// import './collection.styles.scss';
 
 import { connect } from 'react-redux';
 import { selectCollection } from '../../redux/shop/shop.selectors';
 import CollectionItem from '../../components/collection-item/collection-item.component';
+import { CollectionPageContainer, CollectionTitle, CollectionItemsContainer } from './collection.styles';
+
+// import { firestore } from '../../firebase/firebase.utils';
 
 const CollectionPage = ({ collection }) => {
+
+  // useEffect(() => {
+  //   const unsubscribeFromCollections = firestore.collection('collections').onSnapshot(snapshot => console.log(snapshot));
+  //   // able to return a func from this func
+  //   // this func that we return is what called a 'cleanup func'
+  //   // a 'cleanup func' is what useEffect() calls when that component unmount
+  //   return() => {
+  //     unsubscribeFromCollections();
+  //   };
+  // }, []);
+
   const { title, items } = collection;
   return (
-    <div className="collection-page">
-      <h2 className="title">{title}</h2>
-      <div className="items">
+    <CollectionPageContainer>
+      <CollectionTitle>{title}</CollectionTitle>
+      <CollectionItemsContainer>
         {items.map(item => (
           <CollectionItem key={item.id} item={item} />
         ))}
-      </div>
-    </div>
+      </CollectionItemsContainer>
+    </CollectionPageContainer>
   );
 };
 
